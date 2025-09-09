@@ -5,7 +5,22 @@ import 'package:flame/components.dart';
 
 void main() {
   final game = FlameGame(world: MyWorld());
-  runApp(GameWidget(game: game));
+  runApp(
+    GameWidget(
+      game: game,
+      overlayBuilderMap: {
+        'PauseMenu': (context, game) {
+          return Container(
+            color: Colors.red,
+            child: Center(child: Text('Pause Menu')),
+            height: 100.0,
+            width: 300.0,
+          );
+        },
+      },
+      //initialActiveOverlays: ['PauseMenu'],
+    ),
+  );
 }
 
 class MyWorld extends World {
