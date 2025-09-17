@@ -13,8 +13,20 @@ class Player extends SpriteComponent with TapCallbacks, HasGameRef<FlameGame> {
 
   @override
   void onTapUp(TapUpEvent info) {
+    //size += Vector2.all(50);
+    gameRef.overlays.remove('PauseMenu');
+    gameRef.resumeEngine();
+    priority += 1;
+  }
+
+  @override
+  void onTapDown(TapDownEvent event) {
     size += Vector2.all(50);
     // Show the pause menu overlay using Flame's overlay system
     gameRef.overlays.add('PauseMenu');
+    gameRef.pauseEngine();
+
+    // UTIL usar para depurar
+    // gameRef.stepEngine();
   }
 }
