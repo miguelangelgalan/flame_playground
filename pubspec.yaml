@@ -24,5 +24,6 @@ flutter:
 
   assets:
    - assets/images/Player.png
+   - assets/images/Run.png
 
 
