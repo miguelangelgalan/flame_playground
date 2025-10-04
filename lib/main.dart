@@ -97,9 +97,17 @@ class MyParallaxComponent
   @override
   Future<void> onLoad() async {
     parallax = await game.loadParallax(
-      [ParallaxImageData('4.png'), ParallaxImageData('7.png')],
+      [
+        ParallaxImageData('bg/1.png'),
+        ParallaxImageData('bg/2.png'),
+        ParallaxImageData('bg/3.png'),
+        ParallaxImageData('bg/4.png'),
+        ParallaxImageData('bg/5.png'),
+        ParallaxImageData('bg/6.png'),
+        ParallaxImageData('bg/7.png'),
+      ],
       baseVelocity: Vector2(100, 0),
-      velocityMultiplierDelta: Vector2(1.8, 1.0),
+      velocityMultiplierDelta: Vector2(1.1, 1.0),
     );
   }
 }

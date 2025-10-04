@@ -26,8 +26,13 @@ flutter:
    - assets/images/Player.png
    - assets/images/Run.png
    - assets/images/Attack_1.png
-   - assets/images/4.png
-   - assets/images/7.png
+   - assets/images/bg/1.png
+   - assets/images/bg/2.png
+   - assets/images/bg/3.png
+   - assets/images/bg/4.png
+   - assets/images/bg/5.png
+   - assets/images/bg/6.png
+   - assets/images/bg/7.png
    
 
 
