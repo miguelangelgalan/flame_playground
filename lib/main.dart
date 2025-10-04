@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
+import 'package:flame/parallax.dart';
 import 'package:flame_playground/Player.dart';
 import 'package:flutter/material.dart';
 import 'package:flame/components.dart';
@@ -9,11 +11,11 @@ void main() {
   //final game = FlameGame(world: MyWorld());
   final game = MyGame();
   final gameWithAnimation = MyGameWithSpriteAnimation();
-  ;
+  final gameWithSpawn = MyGameWithSpriteAnimationAndSpawn();
 
   runApp(
     GameWidget(
-      game: gameWithAnimation,
+      game: gameWithSpawn,
       overlayBuilderMap: {
         'PauseMenu': (context, game) {
           return Center(
@@ -58,9 +60,46 @@ class MyGameWithSpriteAnimation extends FlameGame with SingleGameInstance {
       textureSize: size,
     );
     this.player = SpriteAnimationComponent.fromFrameData(
-      await images.load("Run.png"),
+      await images.load("Attack_1.png"),
       data,
     );
     this.world.add(this.player);
+  }
+}
+
+class MyGameWithSpriteAnimationAndSpawn extends FlameGame
+    with SingleGameInstance {
+  late final SpriteAnimationComponent player;
+  @override
+  Future<void> onLoad() async {
+    final size = Vector2.all(128);
+    final data = SpriteAnimationData.sequenced(
+      amount: 8,
+      stepTime: 0.1,
+      textureSize: size,
+    );
+    this.player = SpriteAnimationComponent.fromFrameData(
+      await images.load("Attack_1.png"),
+      data,
+    );
+    SpawnComponent campoDeJuego = SpawnComponent(
+      factory: (i) => player,
+      period: 0.1,
+      area: Circle(Vector2(100, 150), 300),
+    );
+    this.world.add(campoDeJuego);
+    add(MyParallaxComponent());
+  }
+}
+
+class MyParallaxComponent
+    extends ParallaxComponent<MyGameWithSpriteAnimationAndSpawn> {
+  @override
+  Future<void> onLoad() async {
+    parallax = await game.loadParallax(
+      [ParallaxImageData('4.png'), ParallaxImageData('7.png')],
+      baseVelocity: Vector2(100, 0),
+      velocityMultiplierDelta: Vector2(1.8, 1.0),
+    );
   }
 }
