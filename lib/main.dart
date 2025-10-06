@@ -106,8 +106,8 @@ class MyParallaxComponent
         ParallaxImageData('bg/6.png'),
         ParallaxImageData('bg/7.png'),
       ],
-      baseVelocity: Vector2(100, 0),
-      velocityMultiplierDelta: Vector2(1.1, 1.0),
+      baseVelocity: Vector2(50, 00),
+      velocityMultiplierDelta: Vector2(1.0, 1.0),
     );
   }
 }
