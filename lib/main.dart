@@ -15,7 +15,7 @@ void main() {
 
   runApp(
     GameWidget(
-      game: gameWithSpawn,
+      game: gameWithAnimation,
       overlayBuilderMap: {
         'PauseMenu': (context, game) {
           return Center(
@@ -63,7 +63,9 @@ class MyGameWithSpriteAnimation extends FlameGame with SingleGameInstance {
       await images.load("Attack_1.png"),
       data,
     );
+    this.player.position = Vector2(100, 150);
     this.world.add(this.player);
+    add(MyParallaxComponent());
   }
 }
 
@@ -92,8 +94,7 @@ class MyGameWithSpriteAnimationAndSpawn extends FlameGame
   }
 }
 
-class MyParallaxComponent
-    extends ParallaxComponent<MyGameWithSpriteAnimationAndSpawn> {
+class MyParallaxComponent extends ParallaxComponent<MyGameWithSpriteAnimation> {
   @override
   Future<void> onLoad() async {
     parallax = await game.loadParallax(
