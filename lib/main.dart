@@ -2,14 +2,17 @@ import 'dart:async';
 
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
+import 'package:flame/input.dart';
+import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_playground/Player.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
 
 void main() {
   //final game = FlameGame(world: MyWorld());
-  final game = MyGame();
+  //final game = MyGame();
   final gameWithAnimation = MyGameWithSpriteAnimation();
   final gameWithSpawn = MyGameWithSpriteAnimationAndSpawn();
 
@@ -33,6 +36,7 @@ void main() {
   );
 }
 
+/*
 class MyWorld extends World {
   @override
   Future<void> onLoad() async {
@@ -46,26 +50,49 @@ class MyGame extends FlameGame with SingleGameInstance {
   @override
   Color backgroundColor() => Colors.blue;
 }
-
+*/
 // Lets play with SPrite Annimations
-class MyGameWithSpriteAnimation extends FlameGame with SingleGameInstance {
-  late final SpriteAnimationComponent player;
+class MyGameWithSpriteAnimation extends FlameGame
+    with SingleGameInstance, KeyboardEvents {
+  //late final SpriteAnimationComponent player;
+  late final Player player;
+  late final JoystickComponent joystick;
 
   @override
   Future<void> onLoad() async {
-    final size = Vector2.all(128);
-    final data = SpriteAnimationData.sequenced(
-      amount: 8,
-      stepTime: 0.1,
-      textureSize: size,
+    /* JOYSTICK */
+    final knobPaint = BasicPalette.blue.withAlpha(200).paint();
+    final backgroundPaint = BasicPalette.blue.withAlpha(100).paint();
+    joystick = JoystickComponent(
+      knob: CircleComponent(radius: 30, paint: knobPaint),
+      background: CircleComponent(radius: 100, paint: backgroundPaint),
+      margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
-    this.player = SpriteAnimationComponent.fromFrameData(
-      await images.load("Attack_1.png"),
-      data,
-    );
-    this.player.position = Vector2(100, 150);
-    this.world.add(this.player);
+
+    player = Player(joystick);
+    world.add(player);
     add(MyParallaxComponent());
+    add(joystick);
+  }
+
+  @override
+  KeyEventResult onKeyEvent(
+    KeyEvent event,
+    Set<LogicalKeyboardKey> keysPressed,
+  ) {
+    if (event is KeyDownEvent) {
+      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
+        player.position.x += 10;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
+        player.position.x -= 10;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
+        player.position.y -= 10;
+      } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
+        player.position.y += 10;
+      }
+      return KeyEventResult.handled;
+    }
+    return KeyEventResult.ignored;
   }
 }
 

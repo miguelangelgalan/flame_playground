@@ -1,32 +1,39 @@
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_playground/main.dart';
 
-class Player extends SpriteComponent with TapCallbacks, HasGameRef<FlameGame> {
-  Player({super.position})
-    : super(size: Vector2.all(200), anchor: Anchor.center);
+class Player extends SpriteAnimationComponent
+    with HasGameReference<MyGameWithSpriteAnimation> {
+  Player(this.joystick) : super(size: Vector2.all(200), anchor: Anchor.center);
+
+  double maxSpeed = 300.0;
+  final JoystickComponent joystick;
 
   @override
   Future<void> onLoad() async {
-    sprite = await Sprite.load('Player.png');
+    final size = Vector2.all(128);
+    final data = SpriteAnimationData.sequenced(
+      amount: 8,
+      stepTime: 0.1,
+      textureSize: size,
+    );
+
+    // Load the sprite sheet image
+    final image = await game.images.load("Attack_1.png");
+
+    // Create the animation directly from the image and data
+    animation = SpriteAnimation.fromFrameData(image, data);
+
+    // Set the initial position
+    position = Vector2(100, 150);
   }
 
   @override
-  void onTapUp(TapUpEvent info) {
-    //size += Vector2.all(50);
-    gameRef.overlays.remove('PauseMenu');
-    gameRef.resumeEngine();
-    priority += 1;
-  }
-
-  @override
-  void onTapDown(TapDownEvent event) {
-    size += Vector2.all(50);
-    // Show the pause menu overlay using Flame's overlay system
-    gameRef.overlays.add('PauseMenu');
-    gameRef.pauseEngine();
-
-    // UTIL usar para depurar
-    // gameRef.stepEngine();
+  void update(double dt) {
+    if (joystick.direction != JoystickDirection.idle) {
+      position.add(joystick.relativeDelta * maxSpeed * dt);
+      angle = joystick.delta.screenAngle();
+    }
   }
 }
