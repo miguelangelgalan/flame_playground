@@ -1,3 +1,4 @@
+import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
@@ -27,6 +28,16 @@ class Player extends SpriteAnimationComponent
 
     // Set the initial position
     position = Vector2(100, 150);
+
+    // Para colisiones
+    //add(CircleHitbox(position: position / 2, radius: size.x / 2));
+    add(
+      RectangleHitbox.relative(
+        Vector2(0.5, 0.9),
+        parentSize: size,
+        position: Vector2(60, 80),
+      ),
+    );
   }
 
   @override

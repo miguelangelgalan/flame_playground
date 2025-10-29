@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flame/experimental.dart';
 import 'package:flame/game.dart';
@@ -6,6 +7,7 @@ import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_playground/Player.dart';
+import 'package:flame_playground/Monster.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
@@ -53,7 +55,7 @@ class MyGame extends FlameGame with SingleGameInstance {
 */
 // Lets play with SPrite Annimations
 class MyGameWithSpriteAnimation extends FlameGame
-    with SingleGameInstance, KeyboardEvents {
+    with SingleGameInstance, KeyboardEvents, HasCollisionDetection {
   //late final SpriteAnimationComponent player;
   late final Player player;
   late final JoystickComponent joystick;
@@ -69,10 +71,31 @@ class MyGameWithSpriteAnimation extends FlameGame
       margin: const EdgeInsets.only(left: 40, bottom: 40),
     );
 
+    /* PLAYER */
     player = Player(joystick);
     world.add(player);
+
+    /* PARALLAX */
     add(MyParallaxComponent());
+
+    /* MONSTERS */
+    final random = Random();
+    final monsters = List.generate(10, (index) {
+      return Monster(
+        position: Vector2(
+          random.nextDouble() * size.x,
+          random.nextDouble() * size.y,
+        ),
+        size: Vector2(80, 80),
+      );
+    });
+
+    for (final monster in monsters) {
+      world.add(monster);
+    }
+
     add(joystick);
+    debugMode = true;
   }
 
   @override
