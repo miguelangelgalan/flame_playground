@@ -8,6 +8,7 @@ import 'package:flame/palette.dart';
 import 'package:flame/parallax.dart';
 import 'package:flame_playground/Player.dart';
 import 'package:flame_playground/Monster.dart';
+import 'package:flame_playground/Explosion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
@@ -59,9 +60,11 @@ class MyGameWithSpriteAnimation extends FlameGame
   //late final SpriteAnimationComponent player;
   late final Player player;
   late final JoystickComponent joystick;
+  late final Explosion explosion;
 
   @override
   Future<void> onLoad() async {
+    explosion = Explosion(position: Vector2(200, 20));
     /* JOYSTICK */
     final knobPaint = BasicPalette.blue.withAlpha(200).paint();
     final backgroundPaint = BasicPalette.blue.withAlpha(100).paint();
@@ -78,24 +81,29 @@ class MyGameWithSpriteAnimation extends FlameGame
     /* PARALLAX */
     add(MyParallaxComponent());
 
+    /* Add explosion sprite */
+    //world.add(explosion);
+
     /* MONSTERS */
     final random = Random();
     final monsters = List.generate(10, (index) {
       return Monster(
         position: Vector2(
-          random.nextDouble() * size.x,
-          random.nextDouble() * size.y,
+          random.nextDouble() * size.x / 2,
+          random.nextDouble() * size.y / 2,
         ),
         size: Vector2(80, 80),
+        explosion: explosion,
       );
     });
 
     for (final monster in monsters) {
+      print(monster.toString());
       world.add(monster);
     }
 
     add(joystick);
-    debugMode = true;
+    //debugMode = true;
   }
 
   @override

@@ -27,7 +27,8 @@ class Player extends SpriteAnimationComponent
     animation = SpriteAnimation.fromFrameData(image, data);
 
     // Set the initial position
-    position = Vector2(100, 150);
+    //position = Vector2(100, 150);
+    position = Vector2(0, 0);
 
     // Para colisiones
     //add(CircleHitbox(position: position / 2, radius: size.x / 2));
