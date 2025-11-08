@@ -9,7 +9,10 @@ import 'package:flame/parallax.dart';
 import 'package:flame_playground/Player.dart';
 import 'package:flame_playground/Monster.dart';
 import 'package:flame_playground/Explosion.dart';
-import 'package:flutter/material.dart';
+import 'package:flame_playground/screens/game_over_screen.dart';
+import 'package:flame_playground/screens/game_play_screen.dart';
+import 'package:flame_playground/screens/game_start_screen.dart';
+import 'package:flutter/material.dart' hide Route;
 import 'package:flutter/services.dart';
 import 'package:flame/components.dart';
 
@@ -54,76 +57,37 @@ class MyGame extends FlameGame with SingleGameInstance {
   Color backgroundColor() => Colors.blue;
 }
 */
-// Lets play with SPrite Annimations
+
 class MyGameWithSpriteAnimation extends FlameGame
     with SingleGameInstance, KeyboardEvents, HasCollisionDetection {
-  //late final SpriteAnimationComponent player;
-  late final Player player;
-  late final JoystickComponent joystick;
-  late final Explosion explosion;
+  late final RouterComponent router;
+  bool gameOver = false;
+  bool showingGameOverScreen = false;
 
   @override
   Future<void> onLoad() async {
-    explosion = Explosion(position: Vector2(200, 20));
-    /* JOYSTICK */
-    final knobPaint = BasicPalette.blue.withAlpha(200).paint();
-    final backgroundPaint = BasicPalette.blue.withAlpha(100).paint();
-    joystick = JoystickComponent(
-      knob: CircleComponent(radius: 30, paint: knobPaint),
-      background: CircleComponent(radius: 100, paint: backgroundPaint),
-      margin: const EdgeInsets.only(left: 40, bottom: 40),
+    super.onLoad();
+    add(
+      router = RouterComponent(
+        initialRoute: 'gamestart',
+        routes: {
+          'gameplay': Route(GamePlayScreen.new),
+          'gameover': Route(GameOverScreen.new),
+          'gamestart': Route(GameStartScreen.new),
+          'gamerestart': Route(GameStartScreen.new),
+        },
+      ),
     );
-
-    /* PLAYER */
-    player = Player(joystick);
-    world.add(player);
-
-    /* PARALLAX */
-    add(MyParallaxComponent());
-
-    /* Add explosion sprite */
-    //world.add(explosion);
-
-    /* MONSTERS */
-    final random = Random();
-    final monsters = List.generate(10, (index) {
-      return Monster(
-        position: Vector2(
-          random.nextDouble() * size.x / 2,
-          random.nextDouble() * size.y / 2,
-        ),
-        size: Vector2(80, 80),
-        explosion: explosion,
-      );
-    });
-
-    for (final monster in monsters) {
-      print(monster.toString());
-      world.add(monster);
-    }
-
-    add(joystick);
     //debugMode = true;
   }
 
   @override
-  KeyEventResult onKeyEvent(
-    KeyEvent event,
-    Set<LogicalKeyboardKey> keysPressed,
-  ) {
-    if (event is KeyDownEvent) {
-      if (event.logicalKey == LogicalKeyboardKey.arrowRight) {
-        player.position.x += 10;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowLeft) {
-        player.position.x -= 10;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowUp) {
-        player.position.y -= 10;
-      } else if (event.logicalKey == LogicalKeyboardKey.arrowDown) {
-        player.position.y += 10;
-      }
-      return KeyEventResult.handled;
+  void update(double dt) {
+    if (gameOver && !showingGameOverScreen) {
+      router.pushNamed('gameover');
+      showingGameOverScreen = true;
     }
-    return KeyEventResult.ignored;
+    super.update(dt);
   }
 }
 

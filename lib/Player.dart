@@ -2,13 +2,14 @@ import 'package:flame/collisions.dart';
 import 'package:flame/components.dart';
 import 'package:flame/events.dart';
 import 'package:flame/game.dart';
+import 'package:flame_playground/Monster.dart';
 import 'package:flame_playground/main.dart';
 
 class Player extends SpriteAnimationComponent
-    with HasGameReference<MyGameWithSpriteAnimation> {
+    with HasGameReference<MyGameWithSpriteAnimation>, CollisionCallbacks {
   Player(this.joystick) : super(size: Vector2.all(200), anchor: Anchor.center);
 
-  double maxSpeed = 300.0;
+  double maxSpeed = 200.0;
   final JoystickComponent joystick;
 
   @override
@@ -28,7 +29,7 @@ class Player extends SpriteAnimationComponent
 
     // Set the initial position
     //position = Vector2(100, 150);
-    position = Vector2(0, 0);
+    position = Vector2(100, 100);
 
     // Para colisiones
     //add(CircleHitbox(position: position / 2, radius: size.x / 2));
@@ -46,6 +47,16 @@ class Player extends SpriteAnimationComponent
     if (joystick.direction != JoystickDirection.idle) {
       position.add(joystick.relativeDelta * maxSpeed * dt);
       angle = joystick.delta.screenAngle();
+    }
+  }
+
+  @override
+  void onCollision(Set<Vector2> intersectionPoints, PositionComponent other) {
+    super.onCollision(intersectionPoints, other);
+    if (other is Monster) {
+      if (other.isKiller) {
+        game.gameOver = true;
+      }
     }
   }
 }

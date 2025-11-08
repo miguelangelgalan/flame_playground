@@ -11,6 +11,7 @@ class Monster extends SpriteComponent
     Vector2? size,
     required Explosion this.explosion,
     Anchor anchor = Anchor.center,
+    bool this.isKiller = false,
   }) : super(
          position: position,
          size: size ?? Vector2.all(100),
@@ -19,11 +20,14 @@ class Monster extends SpriteComponent
 
   final Vector2 velocity = Vector2.all(100);
   final Explosion explosion;
+  bool isKiller;
 
   @override
   Future<void> onLoad() async {
     // Load the sprite image
-    sprite = await game.loadSprite('38.png');
+    isKiller
+        ? sprite = await game.loadSprite('22.png')
+        : sprite = await game.loadSprite('38.png');
     //add(RectangleHitbox(size: size / 2));
     add(
       CircleHitbox(
@@ -39,10 +43,10 @@ class Monster extends SpriteComponent
     final nextX = position.x + velocity.x * dt;
     final nextY = position.y + velocity.y * dt;
     // Check boundaries
-    if (nextX < -(screenSize.x / 2) || nextX > screenSize.x / 2) {
+    if (nextX < 0.0 || nextX > screenSize.x) {
       velocity.x = -velocity.x;
     }
-    if (nextY < -(screenSize.y / 2) || nextY > screenSize.y / 2) {
+    if (nextY < 0.0 || nextY > screenSize.y) {
       velocity.y = -velocity.y;
     }
     position = Vector2(nextX, nextY);
@@ -55,7 +59,7 @@ class Monster extends SpriteComponent
     if (other is Player) {
       //print("COLISION" + other.toString());
       explosion.position = position;
-      game.world.add(explosion);
+      game.add(explosion);
       removeFromParent();
       //remove(this);
       //game.remove(other);
